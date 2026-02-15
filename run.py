@@ -207,4 +207,3 @@ twitch_miner.mine(
     followers=True,                     # Automatic download the list of your followers
     followers_order=FollowersOrder.ASC  # Sort the followers list by follow date. ASC or DESC
 )
-
