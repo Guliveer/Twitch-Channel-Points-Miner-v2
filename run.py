@@ -19,10 +19,10 @@ from TwitchChannelPointsMiner.classes.entities.Streamer import Streamer, Streame
 twitch_miner = TwitchChannelPointsMiner(
     username=os.environ.get("TWITCH_USERNAME", ""),
     password=os.environ.get("TWITCH_PASSWORD", ""),  # If no password will be provided, the script will ask interactively
-    claim_drops_startup=False,                  # If you want to auto claim all drops from Twitch inventory on the startup
+    claim_drops_startup=True,                  # If you want to auto claim all drops from Twitch inventory on the startup
     priority=[                                  # Custom priority in this case for example:
-        Priority.STREAK,                        # - We want first of all to catch all watch streak from all streamers
         Priority.DROPS,                         # - When we don't have anymore watch streak to catch, wait until all drops are collected over the streamers
+        Priority.STREAK,                        # - We want first of all to catch all watch streak from all streamers
         Priority.ORDER                          # - When we have all of the drops claimed and no watch-streak available, use the order priority (POINTS_ASCENDING, POINTS_DESCENDING)
     ],
     enable_analytics=False,                     # Disables Analytics if False. Disabling it significantly reduces memory consumption
@@ -31,12 +31,12 @@ twitch_miner = TwitchChannelPointsMiner(
     logger_settings=LoggerSettings(
         save=True,                              # If you want to save logs in a file (suggested)
         console_level=logging.INFO,             # Level of logs - use logging.DEBUG for more info
-        console_username=False,                 # Adds a username to every console log line if True. Also adds it to Telegram, Discord, etc. Useful when you have several accounts
+        console_username=True,                 # Adds a username to every console log line if True. Also adds it to Telegram, Discord, etc. Useful when you have several accounts
         auto_clear=True,                        # Create a file rotation handler with interval = 1D and backupCount = 7 if True (default)
         time_zone="",                           # Set a specific time zone for console and file loggers. Use tz database names. Example: "America/Denver"
         file_level=logging.DEBUG,               # Level of logs - If you think the log file it's too big, use logging.INFO
         emoji=True,                             # On Windows, we have a problem printing emoji. Set to false if you have a problem
-        less=False,                             # If you think that the logs are too verbose, set this to True
+        less=True,                             # If you think that the logs are too verbose, set this to True
         colored=True,                           # If you want to print colored text
         color_palette=ColorPalette(             # You can also create a custom palette color (for the common message).
             STREAMER_online="GREEN",            # Don't worry about lower/upper case. The script will parse all the values.
@@ -50,37 +50,37 @@ twitch_miner = TwitchChannelPointsMiner(
                     Events.BET_LOSE, Events.CHAT_MENTION],                          # Only these events will be sent to the chat
             disable_notification=True,                                              # Revoke the notification (sound/vibration)
         ),
-        discord=Discord(
-            webhook_api="https://discord.com/api/webhooks/0123456789/0a1B2c3D4e5F6g7H8i9J",  # Discord Webhook URL
-            events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
-                    Events.BET_LOSE, Events.CHAT_MENTION],                                  # Only these events will be sent to the chat
-        ),
-        webhook=Webhook(
-            endpoint="https://example.com/webhook",                                                                    # Webhook URL
-            method="GET",                                                                   # GET or POST
-            events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
-                    Events.BET_LOSE, Events.CHAT_MENTION],                                  # Only these events will be sent to the endpoint
-        ),
-        matrix=Matrix(
-            username="twitch_miner",                                                   # Matrix username (without homeserver)
-            password="...",                                                            # Matrix password
-            homeserver="matrix.org",                                                   # Matrix homeserver
-            room_id="...",                                                             # Room ID
-            events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE, Events.BET_LOSE], # Only these events will be sent
-        ),
-        pushover=Pushover(
-            userkey="YOUR-ACCOUNT-TOKEN",                                             # Login to https://pushover.net/, the user token is on the main page
-            token="YOUR-APPLICATION-TOKEN",                                           # Create a application on the website, and use the token shown in your application
-            priority=0,                                                               # Read more about priority here: https://pushover.net/api#priority
-            sound="pushover",                                                         # A list of sounds can be found here: https://pushover.net/api#sounds
-            events=[Events.CHAT_MENTION, Events.DROP_CLAIM],                          # Only these events will be sent
-        ),
-        gotify=Gotify(
-            endpoint="https://example.com/message?token=TOKEN",
-            priority=8,
-            events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
-                    Events.BET_LOSE, Events.CHAT_MENTION], 
-        )
+        # discord=Discord(
+        #     webhook_api="https://discord.com/api/webhooks/0123456789/0a1B2c3D4e5F6g7H8i9J",  # Discord Webhook URL
+        #     events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
+        #             Events.BET_LOSE, Events.CHAT_MENTION],                                  # Only these events will be sent to the chat
+        # ),
+        # webhook=Webhook(
+        #     endpoint="https://example.com/webhook",                                                                    # Webhook URL
+        #     method="GET",                                                                   # GET or POST
+        #     events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
+        #             Events.BET_LOSE, Events.CHAT_MENTION],                                  # Only these events will be sent to the endpoint
+        # ),
+        # matrix=Matrix(
+        #     username="twitch_miner",                                                   # Matrix username (without homeserver)
+        #     password="...",                                                            # Matrix password
+        #     homeserver="matrix.org",                                                   # Matrix homeserver
+        #     room_id="...",                                                             # Room ID
+        #     events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE, Events.BET_LOSE], # Only these events will be sent
+        # ),
+        # pushover=Pushover(
+        #     userkey="YOUR-ACCOUNT-TOKEN",                                             # Login to https://pushover.net/, the user token is on the main page
+        #     token="YOUR-APPLICATION-TOKEN",                                           # Create a application on the website, and use the token shown in your application
+        #     priority=0,                                                               # Read more about priority here: https://pushover.net/api#priority
+        #     sound="pushover",                                                         # A list of sounds can be found here: https://pushover.net/api#sounds
+        #     events=[Events.CHAT_MENTION, Events.DROP_CLAIM],                          # Only these events will be sent
+        # ),
+        # gotify=Gotify(
+        #     endpoint="https://example.com/message?token=TOKEN",
+        #     priority=8,
+        #     events=[Events.STREAMER_ONLINE, Events.STREAMER_OFFLINE,
+        #             Events.BET_LOSE, Events.CHAT_MENTION], 
+        # )
     ),
     streamer_settings=StreamerSettings(
         make_predictions=True,                  # If you want to Bet / Make prediction
@@ -116,22 +116,95 @@ twitch_miner = TwitchChannelPointsMiner(
 # For example, if in the mine function you don't provide any value for 'make_prediction' but you have set it on TwitchChannelPointsMiner instance, the script will take the value from here.
 # If you haven't set any value even in the instance the default one will be used
 
-#twitch_miner.analytics(host="127.0.0.1", port=5000, refresh=5, days_ago=7)   # Start the Analytics web-server
+# twitch_miner.analytics(host="127.0.0.1", port=5000, refresh=5, days_ago=7)   # Start the Analytics web-server
 
 twitch_miner.mine(
     [
-        Streamer("streamer-username01", settings=StreamerSettings(make_predictions=True  , follow_raid=False , claim_drops=True  , watch_streak=True , community_goals=False , bet=BetSettings(strategy=Strategy.SMART      , percentage=5 , stealth_mode=True,  percentage_gap=20 , max_points=234   , filter_condition=FilterCondition(by=OutcomeKeys.TOTAL_USERS,      where=Condition.LTE, value=800 ) ) )),
-        Streamer("streamer-username02", settings=StreamerSettings(make_predictions=False , follow_raid=True  , claim_drops=False ,                                             bet=BetSettings(strategy=Strategy.PERCENTAGE , percentage=5 , stealth_mode=False, percentage_gap=20 , max_points=1234  , filter_condition=FilterCondition(by=OutcomeKeys.TOTAL_POINTS,     where=Condition.GTE, value=250 ) ) )),
-        Streamer("streamer-username03", settings=StreamerSettings(make_predictions=True  , follow_raid=False ,                     watch_streak=True , community_goals=True  , bet=BetSettings(strategy=Strategy.SMART      , percentage=5 , stealth_mode=False, percentage_gap=30 , max_points=50000 , filter_condition=FilterCondition(by=OutcomeKeys.ODDS,             where=Condition.LT,  value=300 ) ) )),
-        Streamer("streamer-username04", settings=StreamerSettings(make_predictions=False , follow_raid=True  ,                     watch_streak=True ,                                                                                                                                                                                                                                                       )),
-        Streamer("streamer-username05", settings=StreamerSettings(make_predictions=True  , follow_raid=True  , claim_drops=True ,  watch_streak=True , community_goals=True  , bet=BetSettings(strategy=Strategy.HIGH_ODDS  , percentage=7 , stealth_mode=True,  percentage_gap=20 , max_points=90    , filter_condition=FilterCondition(by=OutcomeKeys.PERCENTAGE_USERS, where=Condition.GTE, value=300 ) ) )),
-        Streamer("streamer-username06"),
-        Streamer("streamer-username07"),
-        Streamer("streamer-username08"),
-        "streamer-username09",
-        "streamer-username10",
-        "streamer-username11"
+        "Guliveer_",
+        "Battlefield",
+        "Valorant",
+        "rainbow6",
+        "rainbow6bravo",
+        "BungieFoundation",
+        "StarCitizen",
+        "rainbow6anz",
+        "rainbow6bnl",
+        "r6esportsBR",
+        "r6esportsBR2",
+        "rainbow6CNTwitch",
+        "rainbow6de",
+        "rainbow6es",
+        "rainbow6fr",
+        "rainbow6hk",
+        "rainbow6hu",
+        "rainbow6it",
+        "rainbow6jp",
+        "rainbow6kr",
+        "rainbow6LATAM",
+        "rainbow6pl",
+        "rainbow6ru",
+        "rainbow6th",
+        "rainbow6tw",
+        "rainbow6sea",
+        "rainbowsix_uk",
+        "Pengu",
+        "KingGeorge",
+        "AnneMunition",
+        "zironicdk",
+        "Interro",
+        "Shroud",
+        "Beaulo",
+        "ElektronCUP",
+        "izakooo",
+        "Captain_TF",
+        "pokimane",
+        "ohnePixel",
+        "Squeezie",
+        "TenZ",
+        "Leh_TV",
+        "Ubisoft",
+        "Xbox",
+        "Tabwire",
+        "Intel",
+        "Screamheart",
+        "wingedwindow",
+        "Equinox1de",
+        "drago1470",
+        "eSportsReadyWT",
+        "PaladinsGame",
+        "Foxxi33",
+        "WahooTV",
+        "octarock",
+        "Dryminator",
+        "mowpoluckuv12",
+        "EDDIEO47",
+        "RocketLeagueAPAC",
+        "Sting",
+        "LeCheps",
+        "drskazz11",
+        "shnorkel_TV",
+        "Tangent",
+        "Oskar1up",
+        "XainesWorld",
+        "xQc",
+        "lycommit",
+        "draegast",
+        "beingesports",
+        "RocketLeague",
+        "RocketLeagueSAM",
+        "RocketStreetLive",
+        "RocketBaguette",
+        "WorldofTanksNA",
+        "Gideon",
+        "WarThunder_Esports",
+        "WorldofWarships",
+        "cdnthe3rd",
+        "fextralife",
+        "bunnyhoppor",
+        "DeMu",
+        "Aztecross"
     ],                                  # Array of streamers (order = priority)
-    followers=False,                    # Automatic download the list of your followers
+    followers=True,                     # Automatic download the list of your followers
     followers_order=FollowersOrder.ASC  # Sort the followers list by follow date. ASC or DESC
 )
+
